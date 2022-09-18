@@ -17,7 +17,7 @@ $ sudo ./docker-build.sh
 ```
 
 ## Git Push
-Change git-push.sh, docker-rebuild.sh and docker-clean.sh permision
+Change git-push.sh permision
 ```
 $ chmod a+x git-push.sh
 ```
