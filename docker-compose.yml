@@ -2,3 +2,5 @@ version: "3.8"
 services:
   api:
       build: ./backend
+      ports:
+        - 8001:8001

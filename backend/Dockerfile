@@ -8,7 +8,8 @@ RUN go mod download && go mod verify
 COPY . .
 RUN go build -v -o /usr/local/bin/app ./...
 RUN rm -r /usr/src/app/*
+COPY .env /usr/local/bin
 
-EXPOSE 8000
+EXPOSE 8001
 
 CMD ["app"]
