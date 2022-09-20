@@ -29,45 +29,37 @@ func Encode(b []byte) string {
 
 func Decode(s string) []byte {
   data, err := base64.StdEncoding.DecodeString(s)
-  if err != nil {
-    panic(err)
-  }
+  check(err)
   return data
 }
 
-func Encrypt(text, SKey string) (string, error) {
+func Encrypt(text, SKey string) (string) {
   hasher := md5.New()
   hasher.Write([]byte(SKey))
   block, err := aes.NewCipher([]byte(hex.EncodeToString(hasher.Sum(nil))))
-  if err != nil {
-    return "", err
-  }
+  check(err)
   plainText := []byte(text)
   cfb := cipher.NewCFBEncrypter(block, sbytes)
   cipherText := make([]byte, len(plainText))
   cfb.XORKeyStream(cipherText, plainText)
-  return Encode(cipherText), nil
+  return Encode(cipherText)
 }
 
-func Decrypt(text, SKey string) (string, error) {
+func Decrypt(text, SKey string) (string) {
   hasher := md5.New()
   hasher.Write([]byte(SKey))
   block, err := aes.NewCipher([]byte(hex.EncodeToString(hasher.Sum(nil))))
-  if err != nil {
-    return "", err
-  }
+  check(err)
   cipherText := Decode(text)
   cfb := cipher.NewCFBDecrypter(block, sbytes)
   plainText := make([]byte, len(cipherText))
   cfb.XORKeyStream(plainText, cipherText)
-  return string(plainText), nil
+  return string(plainText)
 }
 
 func GenRand(l int, d int, sym int, ulC bool, drC bool) (string) {
   res, err := password.Generate(l, d, sym, ulC, drC)
-  if err != nil {
-    log.Fatal(err)
-  }
+  check(err)
   return res
 }
 
@@ -112,20 +104,20 @@ func getTOTPToken(secret string) string {
 
 func getUsers(c *gin.Context) {
   auth := c.Param("auth")
-  tOki, _ := Encrypt(auth, auth)
-	db, _ := fDB()
+  tOki := Encrypt(auth, auth)
+	db, err := fDB()
+  check(err)
   rows, err := db.Query("SELECT User, Pass, Email, Otp, Tag, Oki FROM users WHERE Oki = ?", tOki)
-  if (err != nil){
-    log.Fatal(err)
-  }
+  check(err)
   if rows.Next() {
     for rows.Next() {
       var gUserData User
       rows.Scan(&gUserData.User, &gUserData.Pass, &gUserData.Email, &gUserData.Otp, &gUserData.Tag, &gUserData.Oki)
-      tUser, _ := Decrypt(gUserData.User, auth)
-      tPass, _ := Decrypt(gUserData.Pass, auth)
-      tEmail, _ := Decrypt(gUserData.Email, auth)
-      tOtp, _ := Decrypt(gUserData.Otp, auth)
+      tUser := Decrypt(gUserData.User, auth)
+      tPass := Decrypt(gUserData.Pass, auth)
+      tEmail := Decrypt(gUserData.Email, auth)
+      tOtp := Decrypt(gUserData.Otp, auth)
+      tTag := Decrypt(gUserData.Tag, auth)
       cOtp := getTOTPToken(tOtp)
       c.JSON(http.StatusOK, gin.H{
         "sMsg": "ok",
@@ -133,7 +125,7 @@ func getUsers(c *gin.Context) {
         "pass": tPass,
         "email": tEmail,
         "otp": cOtp,
-        "tag": gUserData.Tag,
+        "tag": tTag,
       }) 
     }
   }else{
@@ -152,15 +144,13 @@ func addUser(c *gin.Context) {
   }
 	db, _ := fDB()
   st, err := db.Prepare("INSERT INTO users (User, Pass, Email, Otp, Tag, Oki) VALUES (?, ?, ?, ?, ?, ?)")
-  if (err != nil){
-    log.Fatal(err)
-  }
-  tUser, _ := Encrypt(addUserData.User, auth)
-  tPass, _ := Encrypt(addUserData.Pass, auth)
-  tEmail, _ := Encrypt(addUserData.Email, auth)
-  tOtp, _ := Encrypt(strings.ReplaceAll(addUserData.Otp, " ", ""), auth)
-  tTag, _ := Encrypt(addUserData.Tag, auth)
-  tOki, _ := Encrypt(auth, auth)
+  check(err)
+  tUser := Encrypt(addUserData.User, auth)
+  tPass := Encrypt(addUserData.Pass, auth)
+  tEmail := Encrypt(addUserData.Email, auth)
+  tOtp := Encrypt(strings.ReplaceAll(addUserData.Otp, " ", ""), auth)
+  tTag := Encrypt(addUserData.Tag, auth)
+  tOki := Encrypt(auth, auth)
   st.Exec(tUser, tPass, tEmail, tOtp, tTag, tOki)
   c.JSON(http.StatusOK, gin.H{
       "sMsg": "ok",

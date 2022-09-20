@@ -1,14 +1,13 @@
-FROM golang:1.19
+FROM golang:latest
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 
 COPY . .
 RUN go build -v -o /usr/local/bin/app ./...
-RUN rm -r /usr/src/app/*
-COPY .env /usr/local/bin
+RUN rm -r /app/*
 
 EXPOSE 8001
 

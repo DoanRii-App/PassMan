@@ -7,11 +7,11 @@ Database    - MySQL
 ```
 
 ## Build
-Change docker-build.sh, docker-rebuild.sh and docker-clean.sh permision
+Change docker-build.sh and docker-clean.sh permision
 ```
 $ chmod a+x docker-build.sh
 ```
-Run docker-build.sh, docker-rebuild.sh and docker-clean.sh with permision
+Run docker-build.sh and docker-clean.sh with permision
 ```
 $ sudo ./docker-build.sh
 ```
