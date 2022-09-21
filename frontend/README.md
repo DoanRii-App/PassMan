@@ -1,3 +1,3 @@
-# vitejs-vite-jjzucv
+# vitejs-vite-yyh9uk
 
-[Edit on StackBlitz ⚡️](https://stackblitz.com/edit/vitejs-vite-jjzucv)
+[Edit on StackBlitz ⚡️](https://stackblitz.com/edit/vitejs-vite-yyh9uk)

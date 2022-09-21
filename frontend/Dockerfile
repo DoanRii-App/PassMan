@@ -1,14 +1,17 @@
 FROM node:latest
 
-RUN npm install -g http-server
-
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+RUN mkdir temp && mkdir dist
 
-COPY . .
-RUN npm run build
+COPY package*.json ./temp
+RUN cd ./temp && npm install
+RUN npm install -g http-server
+
+COPY . ./temp
+RUN  cd ./temp && npm run build
+RUN mv ./temp/dist/* ./dist
+RUN rm -r ./temp
 
 EXPOSE 8000
 
