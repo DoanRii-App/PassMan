@@ -1,9 +1,7 @@
 import React from 'react';
 import {
-  IconGitPullRequest,
-  IconAlertCircle,
-  IconMessages,
-  IconDatabase,
+  IconShieldLock,
+  IconSquarePlus,
 } from '@tabler/icons';
 import { ThemeIcon, UnstyledButton, Group, Text } from '@mantine/core';
 
@@ -44,14 +42,8 @@ function NavLink({ icon, color, label }: NavLinkProps) {
 }
 
 const data = [
-  {
-    icon: <IconGitPullRequest size={16} />,
-    color: 'blue',
-    label: 'Pull Requests',
-  },
-  { icon: <IconAlertCircle size={16} />, color: 'teal', label: 'Open Issues' },
-  { icon: <IconMessages size={16} />, color: 'violet', label: 'Discussions' },
-  { icon: <IconDatabase size={16} />, color: 'grape', label: 'Databases' },
+  { icon: <IconShieldLock size={16} />, color: 'teal', label: 'Password Vault' },
+  { icon: <IconSquarePlus size={16} />, color: 'grape', label: 'Add Password' },
 ];
 
 function NavLinks() {
